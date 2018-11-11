@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#########################################################################
+#########################################################################
+#########################################################################
+#########################################################################
+
+# Counts all the words in all the .docx files in the current directory. #
+
+######## Static ###############
+__defaultExtension=txt
+__tempDir="wc_temp"
+__supportedExtensions=( txt rtf doc docx )
+######### Input Params #########
+__ext=${1-${__defaultExtension}}
+######### Functions ############
+convertTempDirToTxtFormat() {
+    if [[ "$__ext" -eq "txt" ]]
+        then return
+    fi
+
+    textutil -convert txt ${__tempDir}/*
+}
+
+countAllTxtFilesInTempDir() {
+    cat ${__tempDir}/*.txt | wc -w
+}
+
+copyFilesWithExtensionToTempDir() {
+    local _ext=$1
+    local _fileFormat=*.${_ext}
+
+    cp ${_fileFormat} ${__tempDir}
+}
+
+makeTempDir() {
+    mkdir -p ${__tempDir}
+}
+
+remTempDir() {
+    rm -r ${__tempDir}
+}
+######### Main #########
+main() {
+    makeTempDir
+    copyFilesWithExtensionToTempDir ${__ext}
+    convertTempDirToTxtFormat
+    count=$(countAllTxtFilesInTempDir)
+    remTempDir
+
+    echo ${count}
+}
+
+main
