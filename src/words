@@ -3,7 +3,7 @@
 ######## Static ###############
 
 __defaultExtension=txt
-__dbg=0
+__dbg=1
 __supportedExtensions=( txt rtf doc docx )
 __tempDir="wc_temp"
 
@@ -54,6 +54,27 @@ remTempDir() {
     rm -r ${__tempDir}
 }
 
+######### Param Validation #########
+extensionIsSupported() {
+    #dbg "Verifying extension is one of ${__supportedExtensions}..."
+    local foundSupportedExt=0
+    for _ext in ${__supportedExtensions[*]}
+    do
+        if [[ "${_ext}" -eq __ext ]]
+            then foundSupportedExt=1
+        fi
+    done
+    echo ${foundSupportedExt}
+}
+
+validateParams() {
+    dbg "Validating params..."
+
+    local _extensionIsSupported=$(extensionIsSupported)
+    if [[ ${_extensionIsSupported} != 1 ]]
+        then return 1
+    fi
+}
 ######### Main #########
 main() {
     makeTempDir
@@ -65,4 +86,6 @@ main() {
     echo ${count}
 }
 
-main
+######### Entry point #########
+echo $(extensionIsSupported)
+#main
