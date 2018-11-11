@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
-#########################################################################
-#########################################################################
-#########################################################################
-#########################################################################
-
-# Counts all the words in all the .docx files in the current directory. #
 
 ######## Static ###############
+
 __defaultExtension=txt
-__tempDir="wc_temp"
+__dbg=0
 __supportedExtensions=( txt rtf doc docx )
+__tempDir="wc_temp"
+
 ######### Input Params #########
+
 __ext=${1-${__defaultExtension}}
+
 ######### Functions ############
+
 convertTempDirToTxtFormat() {
+    dbg "converting files in ${__tempDir} to txt..."
+
     if [[ "$__ext" -eq "txt" ]]
         then return
     fi
@@ -22,23 +24,36 @@ convertTempDirToTxtFormat() {
 }
 
 countAllTxtFilesInTempDir() {
+    dbg "word counting all txt in ${__tempDir}..."
     cat ${__tempDir}/*.txt | wc -w
 }
 
 copyFilesWithExtensionToTempDir() {
     local _ext=$1
     local _fileFormat=*.${_ext}
+    dbg "copying files with extension ${_ext} to ${__tempDir} ..."
 
     cp ${_fileFormat} ${__tempDir}
 }
 
+dbg() {
+    if [[ ${__dbg} != 1 ]]
+        then return
+    fi
+
+    echo $1
+}
+
 makeTempDir() {
+    dbg "making temp dir ${__tempDir}..."
     mkdir -p ${__tempDir}
 }
 
 remTempDir() {
+    dbg "removing ${__tempDir}..."
     rm -r ${__tempDir}
 }
+
 ######### Main #########
 main() {
     makeTempDir
