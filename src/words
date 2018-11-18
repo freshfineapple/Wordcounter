@@ -3,9 +3,9 @@
 ######## Static ###############
 
 __defaultExtension=txt
-__dbg=1
-__supportedExtensions=( txt rtf doc docx )
-__tempDir="wc_temp"
+__dbg=0
+__supportedExtensions=( "txt" "rtf" "doc" "docx" )
+__tempDir="words_temp"
 
 ######### Input Params #########
 
@@ -60,7 +60,7 @@ extensionIsSupported() {
     local foundSupportedExt=0
     for _ext in ${__supportedExtensions[*]}
     do
-        if [[ "${_ext}" -eq __ext ]]
+        if [[ ${_ext} = ${__ext} ]]
             then foundSupportedExt=1
         fi
     done
@@ -87,5 +87,4 @@ main() {
 }
 
 ######### Entry point #########
-echo $(extensionIsSupported)
-#main
+main
