@@ -38,24 +38,36 @@ function remTempDir() {
 }
 
 ######### Param Validation #########
-function validateExtension() {
-    for _ext in ${__supportedExtensions[*]}
+function validateExtensionIsSupported() {
+    for ext in ${__supportedExtensions[*]}
     do
-        if [[ ${_ext} = ${__ext} ]]
-            then return
+        if [[ ${ext} = ${__ext} ]]
+            then
+                return 0
         fi
     done
 
-    return 1
+    printf "%s\n" "The extension ${__ext} is not supported."
+    exit 1
+}
+
+function validateFilesWithExtensionExist() {
+    for f in *.${__ext};
+    do
+        # A file with extension exists
+        if [[ -e ${f} ]]
+        then
+            return 0
+        fi
+    done
+
+    echo "No files found with extension ${__ext} in dir $PWD"
+    exit 1
 }
 
 function validateParams() {
-    validateExtension
-    if [[ $? != 0 ]]
-        then
-            printf "The extension ${__ext} is not supported."
-            exit 1
-    fi
+    validateExtensionIsSupported
+    validateFilesWithExtensionExist
 }
 
 ######### Main #########
