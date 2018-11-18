@@ -2,10 +2,10 @@
 
 ######## Static ###############
 
-__defaultExtension=txt
-__dbg=0
+__defaultExtension=docx
 __supportedExtensions=( "txt" "rtf" "doc" "docx" )
-__tempDir="words_temp"
+__startingDir=${PWD}
+__tempDir=${__startingDir}"/words_temp"
 
 ######### Input Params #########
 
@@ -13,78 +13,66 @@ __ext=${1-${__defaultExtension}}
 
 ######### Functions ############
 
-convertTempDirToTxtFormat() {
-    dbg "converting files in ${__tempDir} to txt..."
-
-    if [[ "$__ext" -eq "txt" ]]
+function convertTempDirToTxtFormat() {
+    if [[ "$__ext" = "txt" ]]
         then return
     fi
 
     textutil -convert txt ${__tempDir}/*
 }
 
-countAllTxtFilesInTempDir() {
-    dbg "word counting all txt in ${__tempDir}..."
+function countAllTxtFilesInTempDir() {
     cat ${__tempDir}/*.txt | wc -w
 }
 
-copyFilesWithExtensionToTempDir() {
+function copyFilesWithExtensionToTempDir() {
     local _ext=$1
-    local _fileFormat=*.${_ext}
-    dbg "copying files with extension ${_ext} to ${__tempDir} ..."
-
-    cp ${_fileFormat} ${__tempDir}
+    cp *.${_ext} ${__tempDir}
 }
 
-dbg() {
-    if [[ ${__dbg} != 1 ]]
-        then return
-    fi
-
-    echo $1
-}
-
-makeTempDir() {
-    dbg "making temp dir ${__tempDir}..."
+function makeTempDir() {
     mkdir -p ${__tempDir}
 }
 
-remTempDir() {
-    dbg "removing ${__tempDir}..."
+function remTempDir() {
     rm -r ${__tempDir}
 }
 
 ######### Param Validation #########
-extensionIsSupported() {
-    #dbg "Verifying extension is one of ${__supportedExtensions}..."
-    local foundSupportedExt=0
+function validateExtension() {
     for _ext in ${__supportedExtensions[*]}
     do
         if [[ ${_ext} = ${__ext} ]]
-            then foundSupportedExt=1
+            then return
         fi
     done
-    echo ${foundSupportedExt}
+
+    return 1
 }
 
-validateParams() {
-    dbg "Validating params..."
-
-    local _extensionIsSupported=$(extensionIsSupported)
-    if [[ ${_extensionIsSupported} != 1 ]]
-        then return 1
+function validateParams() {
+    validateExtension
+    if [[ $? != 0 ]]
+        then
+            printf "The extension ${__ext} is not supported."
+            exit 1
     fi
 }
+
 ######### Main #########
+
 main() {
+    validateParams
+
     makeTempDir
     copyFilesWithExtensionToTempDir ${__ext}
     convertTempDirToTxtFormat
-    count=$(countAllTxtFilesInTempDir)
+    local count=$(countAllTxtFilesInTempDir)
     remTempDir
 
-    echo ${count}
+    printf ${count}
 }
 
 ######### Entry point #########
+
 main
