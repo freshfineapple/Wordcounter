@@ -4,8 +4,7 @@
 
 __defaultExtension=docx
 __supportedExtensions=( "txt" "rtf" "doc" "docx" )
-__startingDir=${PWD}
-__tempDir=${__startingDir}"/words_temp"
+__tempDir="words_temp"
 
 ######### Input Params #########
 
@@ -70,7 +69,7 @@ main() {
     local count=$(countAllTxtFilesInTempDir)
     remTempDir
 
-    printf ${count}
+    printf "%s\n" ${count}
 }
 
 ######### Entry point #########
