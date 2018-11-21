@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+unsupportedExt=abcxyz
+../../words ${unsupportedExt}
+result=$?
+if [[ ${result} != 0 ]]
+    #Expect failure
+    then exit 0
+fi
+exit 1

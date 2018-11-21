@@ -61,7 +61,7 @@ function validateFilesWithExtensionExist() {
         fi
     done
 
-    echo "No files found with extension ${__ext} in dir $PWD"
+    printf "%s\n" "No files found with extension ${__ext} in dir $PWD"
     exit 1
 }
 
