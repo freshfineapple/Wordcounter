@@ -15,21 +15,29 @@ function printOutcome() {
 function printOutput() {
     echo $1 | sed 's/^/|  /'
 }
-echo Running tests...
 
-cd samples
-for test in ../*.test
-do
-    if [[ ${test} != ../testharness.sh ]]
-        then
-            withoutDots=${test#../}
-            withoutExt=${withoutDots%.test}
-            printf "\nTest: %s\n" ${withoutExt}
-            testOutput=$(bash ${test})
-            echo $testOutput
-            testOutcome=$?
-            printOutput ${testOutput}
-            printOutcome ${testOutcome}
-    fi
-done
 
+function runTests() {
+    printf "\nRunning tests...\n"
+    cd samples
+    for test in ../*.test
+    do
+        if [[ ${test} != ../testharness.sh ]]
+            then
+                withoutDots=${test#../}
+                withoutExt=${withoutDots%.test}
+                printf "\nTest: %s\n" ${withoutExt}
+
+                # Run Test
+                testOutput=$(bash ${test})
+                testOutcome=$?
+
+                printOutput "${testOutput}"
+                printOutcome "${testOutcome}"
+        fi
+    done
+}
+
+
+# Entry point
+runTests

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-unsupportedExt=badExt
+unsupportedExt=abcxyz
 ../../words ${unsupportedExt}
 result=$?
-if [[ ${result} = 1 ]]
+if [[ ${result} != 0 ]]
     #Expect failure
     then exit 0
 fi
